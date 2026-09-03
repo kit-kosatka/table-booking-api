@@ -320,3 +320,34 @@ async def test_create_booking_invalid_guests(client):
     )
 
     assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_get_bookings_pagination(client):
+    names = ["Иванов", "Петров", "Сидоров"]
+
+    for i, name in enumerate(names):
+        response = await client.post(
+            "/bookings",
+            json={
+                "name": name,
+                "phone": f"+799912345{i:02d}",
+                "booking_date": "2026-09-10",
+                "booking_time": f"{18 + i}:00",
+                "guests": 2,
+            },
+        )
+        assert response.status_code == 201
+
+    response = await client.get("/bookings?page=1&limit=2")
+
+    assert response.status_code == 200
+    assert len(response.json()) == 2
+    assert response.json()[0]["name"] == "Иванов"
+    assert response.json()[1]["name"] == "Петров"
+
+    response = await client.get("/bookings?page=2&limit=2")
+
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    assert response.json()[0]["name"] == "Сидоров"

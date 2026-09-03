@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import date as date_type
 from app.api.dependencies import get_db
@@ -48,6 +48,8 @@ async def create_booking(
 )
 async def get_bookings(
     date: date_type | None = None,
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
     session: AsyncSession = Depends(get_db),
 ) -> list[BookingOut]:
     repository = BookingRepository(session)
@@ -55,6 +57,8 @@ async def get_bookings(
     return await get_bookings_service(
         repository,
         date,
+        page,
+        limit,
     )
 
 

@@ -45,11 +45,23 @@ class BookingRepository:
 
         return booking
 
-    async def get_all(self, booking_date: date | None = None) -> list[Booking]:
+    async def get_all(
+        self,
+        booking_date: date | None = None,
+        page: int = 1,
+        limit: int = 10,
+    ) -> list[Booking]:
         stmt = select(Booking)
+
         if booking_date is not None:
             stmt = stmt.where(Booking.booking_date == booking_date)
+
+        offset = (page - 1) * limit
+
+        stmt = stmt.order_by(Booking.id).offset(offset).limit(limit)
+
         result = await self.session.execute(stmt)
+
         return result.scalars().all()
 
     async def get_by_id(self, booking_id: int) -> Booking | None:

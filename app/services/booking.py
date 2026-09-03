@@ -23,8 +23,14 @@ async def create_booking_service(
 async def get_bookings_service(
     repository: BookingRepository,
     booking_date: date | None = None,
+    page: int = 1,
+    limit: int = 10,
 ) -> list[Booking]:
-    return await repository.get_all(booking_date)
+    return await repository.get_all(
+        booking_date,
+        page,
+        limit,
+    )
 
 
 async def get_booking_by_id_service(
