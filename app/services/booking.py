@@ -1,7 +1,8 @@
+from datetime import date
+
 from app.models.booking import Booking
 from app.repositories.booking import BookingRepository
 from app.schemas.booking import BookingCreate
-from datetime import date
 
 
 async def create_booking_service(
@@ -17,6 +18,7 @@ async def create_booking_service(
         raise ValueError("Booking slot is already occupied")
 
     return await repository.create(booking_data)
+
 
 async def get_bookings_service(
     repository: BookingRepository,
@@ -35,6 +37,7 @@ async def get_booking_by_id_service(
         raise ValueError("Booking not found")
 
     return booking
+
 
 async def cancel_booking_service(
     repository: BookingRepository,

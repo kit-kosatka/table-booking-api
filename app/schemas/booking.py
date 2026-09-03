@@ -17,6 +17,11 @@ class BookingCreate(BaseModel):
     def validate_name(cls, value: str) -> str:
         value = value.strip()
 
+        if len(value) < 2:
+            raise ValueError(
+                "Имя должно содержать минимум 2 символа"
+            )
+
         if not re.fullmatch(r"[А-Яа-яЁёA-Za-z -]+", value):
             raise ValueError(
                 "Имя может содержать только буквы, пробелы и дефис"

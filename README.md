@@ -52,6 +52,12 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
+Создать директорию для базы данных:
+
+```bash
+mkdir data
+```
+
 #### 4. Применение миграций
 
 ```bash

@@ -245,3 +245,82 @@ async def test_cancel_booking_not_found(client):
     assert response.json() == {
         "detail": "Booking not found"
     }
+
+@pytest.mark.asyncio
+async def test_create_booking_invalid_name(client):
+    response = await client.post(
+        "/bookings",
+        json={
+            "name": "A1",
+            "phone": "+79991234567",
+            "booking_date": (date.today() + timedelta(days=1)).isoformat(),
+            "booking_time": "18:00:00",
+            "guests": 2,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_booking_invalid_phone(client):
+    response = await client.post(
+        "/bookings",
+        json={
+            "name": "Иван Иванов",
+            "phone": "123456",
+            "booking_date": (date.today() + timedelta(days=1)).isoformat(),
+            "booking_time": "18:00:00",
+            "guests": 2,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_booking_invalid_date(client):
+    response = await client.post(
+        "/bookings",
+        json={
+            "name": "Иван Иванов",
+            "phone": "+79991234567",
+            "booking_date": (date.today() + timedelta(days=91)).isoformat(),
+            "booking_time": "18:00:00",
+            "guests": 2,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_booking_invalid_time(client):
+    response = await client.post(
+        "/bookings",
+        json={
+            "name": "Иван Иванов",
+            "phone": "+79991234567",
+            "booking_date": (date.today() + timedelta(days=1)).isoformat(),
+            "booking_time": "18:30:00",
+            "guests": 2,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_booking_invalid_guests(client):
+    response = await client.post(
+        "/bookings",
+        json={
+            "name": "Иван Иванов",
+            "phone": "+79991234567",
+            "booking_date": (date.today() + timedelta(days=1)).isoformat(),
+            "booking_time": "18:00:00",
+            "guests": 13,
+        },
+    )
+
+    assert response.status_code == 422
