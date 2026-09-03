@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from datetime import date as date_type
 from app.api.dependencies import get_db
 from app.repositories.booking import BookingRepository
 from app.schemas.booking import BookingCreate, BookingOut
-from app.services.booking import create_booking_service
+from app.services.booking import create_booking_service, get_bookings_service
 
 
 router = APIRouter(
@@ -36,3 +36,18 @@ async def create_booking(
         ) from exc
 
     return booking
+
+@router.get(
+    "",
+    response_model=list[BookingOut],
+)
+async def get_bookings(
+    date: date_type | None = None,
+    session: AsyncSession = Depends(get_db),
+) -> list[BookingOut]:
+    repository = BookingRepository(session)
+
+    return await get_bookings_service(
+        repository,
+        date,
+    )

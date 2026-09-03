@@ -44,3 +44,10 @@ class BookingRepository:
         await self.session.refresh(booking)
 
         return booking
+
+    async def get_all(self, booking_date: date | None = None) -> list[Booking]:
+        stmt = select(Booking)
+        if booking_date is not None:
+            stmt = stmt.where(Booking.booking_date == booking_date)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
