@@ -4,8 +4,12 @@ from datetime import date as date_type
 from app.api.dependencies import get_db
 from app.repositories.booking import BookingRepository
 from app.schemas.booking import BookingCreate, BookingOut
-from app.services.booking import create_booking_service, get_bookings_service, get_booking_by_id_service, cancel_booking_service
-
+from app.services.booking import (
+    create_booking_service,
+    get_bookings_service,
+    get_booking_by_id_service,
+    cancel_booking_service,
+)
 
 router = APIRouter(
     prefix="/bookings",
@@ -37,6 +41,7 @@ async def create_booking(
 
     return booking
 
+
 @router.get(
     "",
     response_model=list[BookingOut],
@@ -51,6 +56,7 @@ async def get_bookings(
         repository,
         date,
     )
+
 
 @router.get(
     "/{booking_id}",

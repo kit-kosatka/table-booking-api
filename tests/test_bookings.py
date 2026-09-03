@@ -1,6 +1,7 @@
 import pytest
 from datetime import date, timedelta
 
+
 @pytest.mark.asyncio
 async def test_create_booking(client):
     booking_date = date.today() + timedelta(days=1)
@@ -29,7 +30,6 @@ async def test_create_booking(client):
     assert "id" in data
 
 
-
 @pytest.mark.asyncio
 async def test_create_booking_conflict(client):
     booking_date = date.today() + timedelta(days=2)
@@ -55,9 +55,7 @@ async def test_create_booking_conflict(client):
     )
 
     assert second_response.status_code == 409
-    assert second_response.json() == {
-        "detail": "Booking slot is already occupied"
-    }
+    assert second_response.json() == {"detail": "Booking slot is already occupied"}
 
 
 @pytest.mark.asyncio
@@ -166,9 +164,7 @@ async def test_get_booking_not_found(client):
     response = await client.get("/bookings/999")
 
     assert response.status_code == 404
-    assert response.json() == {
-        "detail": "Booking not found"
-    }
+    assert response.json() == {"detail": "Booking not found"}
 
 
 @pytest.mark.asyncio
@@ -237,14 +233,14 @@ async def test_cancelled_booking_does_not_block_slot(client):
 
     assert second_response.status_code == 201
 
+
 @pytest.mark.asyncio
 async def test_cancel_booking_not_found(client):
     response = await client.delete("/bookings/999")
 
     assert response.status_code == 404
-    assert response.json() == {
-        "detail": "Booking not found"
-    }
+    assert response.json() == {"detail": "Booking not found"}
+
 
 @pytest.mark.asyncio
 async def test_create_booking_invalid_name(client):

@@ -18,24 +18,17 @@ class BookingCreate(BaseModel):
         value = value.strip()
 
         if len(value) < 2:
-            raise ValueError(
-                "Имя должно содержать минимум 2 символа"
-            )
+            raise ValueError("Имя должно содержать минимум 2 символа")
 
         if not re.fullmatch(r"[А-Яа-яЁёA-Za-z -]+", value):
-            raise ValueError(
-                "Имя может содержать только буквы, пробелы и дефис"
-            )
+            raise ValueError("Имя может содержать только буквы, пробелы и дефис")
 
         return value
 
     @field_validator("phone")
     @classmethod
     def validate_phone(cls, value: str) -> str:
-        if not (
-                re.fullmatch(r"\+7\d{10}", value)
-                or re.fullmatch(r"8\d{10}", value)
-        ):
+        if not (re.fullmatch(r"\+7\d{10}", value) or re.fullmatch(r"8\d{10}", value)):
             raise ValueError(
                 "Телефон должен быть в формате +7XXXXXXXXXX или 8XXXXXXXXXX"
             )
@@ -59,16 +52,17 @@ class BookingCreate(BaseModel):
     @classmethod
     def validate_booking_time(cls, value: time) -> time:
         if (
-                value.minute != 0
-                or value.second != 0
-                or value.microsecond != 0
-                or not 12 <= value.hour <= 22
+            value.minute != 0
+            or value.second != 0
+            or value.microsecond != 0
+            or not 12 <= value.hour <= 22
         ):
             raise ValueError(
                 "Время бронирования должно быть с 12:00 до 22:00 с шагом 1 час"
             )
 
         return value
+
 
 class BookingOut(BookingCreate):
     id: int

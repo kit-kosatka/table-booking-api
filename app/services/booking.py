@@ -52,4 +52,3 @@ async def cancel_booking_service(
         raise ValueError("Booking is already cancelled")
 
     return await repository.cancel(booking)
-
