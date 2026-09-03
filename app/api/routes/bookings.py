@@ -4,7 +4,7 @@ from datetime import date as date_type
 from app.api.dependencies import get_db
 from app.repositories.booking import BookingRepository
 from app.schemas.booking import BookingCreate, BookingOut
-from app.services.booking import create_booking_service, get_bookings_service
+from app.services.booking import create_booking_service, get_bookings_service, get_booking_by_id_service, cancel_booking_service
 
 
 router = APIRouter(
@@ -51,3 +51,52 @@ async def get_bookings(
         repository,
         date,
     )
+
+@router.get(
+    "/{booking_id}",
+    response_model=BookingOut,
+)
+async def get_booking(
+    booking_id: int,
+    session: AsyncSession = Depends(get_db),
+) -> BookingOut:
+    repository = BookingRepository(session)
+
+    try:
+        return await get_booking_by_id_service(
+            repository,
+            booking_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+
+
+@router.delete(
+    "/{booking_id}",
+    response_model=BookingOut,
+)
+async def cancel_booking(
+    booking_id: int,
+    session: AsyncSession = Depends(get_db),
+) -> BookingOut:
+    repository = BookingRepository(session)
+
+    try:
+        return await cancel_booking_service(
+            repository,
+            booking_id,
+        )
+    except ValueError as exc:
+        if str(exc) == "Booking not found":
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=str(exc),
+            ) from exc
+
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc

@@ -23,3 +23,30 @@ async def get_bookings_service(
     booking_date: date | None = None,
 ) -> list[Booking]:
     return await repository.get_all(booking_date)
+
+
+async def get_booking_by_id_service(
+    repository: BookingRepository,
+    booking_id: int,
+) -> Booking:
+    booking = await repository.get_by_id(booking_id)
+
+    if booking is None:
+        raise ValueError("Booking not found")
+
+    return booking
+
+async def cancel_booking_service(
+    repository: BookingRepository,
+    booking_id: int,
+) -> Booking:
+    booking = await repository.get_by_id(booking_id)
+
+    if booking is None:
+        raise ValueError("Booking not found")
+
+    if booking.status == "cancelled":
+        raise ValueError("Booking is already cancelled")
+
+    return await repository.cancel(booking)
+

@@ -51,3 +51,18 @@ class BookingRepository:
             stmt = stmt.where(Booking.booking_date == booking_date)
         result = await self.session.execute(stmt)
         return result.scalars().all()
+
+    async def get_by_id(self, booking_id: int) -> Booking | None:
+        stmt = select(Booking).where(Booking.id == booking_id)
+
+        result = await self.session.execute(stmt)
+
+        return result.scalar_one_or_none()
+
+    async def cancel(self, booking: Booking) -> Booking:
+        booking.status = "cancelled"
+
+        await self.session.commit()
+        await self.session.refresh(booking)
+
+        return booking
