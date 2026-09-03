@@ -14,10 +14,13 @@ API позволяет создавать, просматривать и отм�
 * Alembic
 * pytest
 * httpx
+* Docker
 
 ## Запуск проекта
 
-### 1. Создание виртуального окружения
+### Локальный запуск
+
+#### 1. Создание виртуального окружения
 
 ```bash
 python -m venv .venv
@@ -35,13 +38,13 @@ source .venv/bin/activate
 .venv\Scripts\activate
 ```
 
-### 2. Установка зависимостей
+#### 2. Установка зависимостей
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Настройка окружения
+#### 3. Настройка окружения
 
 Создать файл `.env` на основе `.env.example`:
 
@@ -49,13 +52,13 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-### 4. Применение миграций
+#### 4. Применение миграций
 
 ```bash
 alembic upgrade head
 ```
 
-### 5. Запуск приложения
+#### 5. Запуск приложения
 
 ```bash
 uvicorn app.main:app --reload
@@ -65,6 +68,32 @@ uvicorn app.main:app --reload
 
 ```text
 http://127.0.0.1:8000
+```
+
+### Запуск через Docker
+
+Сборка и запуск контейнера:
+
+```bash
+docker compose up -d --build
+```
+
+Применение миграций:
+
+```bash
+docker compose exec app alembic upgrade head
+```
+
+После запуска API доступен по адресу:
+
+```text
+http://127.0.0.1:8000
+```
+
+Остановка контейнера:
+
+```bash
+docker compose down
 ```
 
 ## Документация API
